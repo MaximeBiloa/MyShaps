@@ -64,3 +64,6 @@ List<Widget> tabBarViewOperators = [];
 
 //Local storage of All Operators
 Map<String, dynamic> localOperators = {};
+
+//Online storage of All Operators
+Map<String, dynamic> onlineOperators = {};

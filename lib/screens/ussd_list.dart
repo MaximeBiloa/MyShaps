@@ -35,7 +35,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
   bool about = false;
   bool enablePackage = false;
   bool operatorDatasLoading = true;
-  //===============================
+  //=======================================
 
   //PROVIDERS
   late CategoriesProvider categoriesProvider;
@@ -63,12 +63,14 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
     operatorsProvider = new OperatorsProvider();
 
     //BACK REQUEST TO GET OPERATORS DATAS
-    allOperatorsDatas();
-    //======================================
+    getAllOperatorsDatasToSaveLocal();
+    //===================================
 
     //INITIALIZE CATEGORIES CONTROLLER;
-    _categoriesController =
-        new TabController(length: categories.length, vsync: this);
+    _categoriesController = new TabController(
+        length: categories.length,
+        vsync: this,
+        initialIndex: currentCategoryIndex);
     _categoriesController.addListener(() {
       setState(() {
         currentCategoryIndex = _categoriesController.index;
@@ -86,79 +88,50 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void allOperatorsDatas() {
-    operatorsProvider.getAllOperators().then((datas) {
-      if (datas != null) {
-        List<dynamic> operatorsDatas = datas['data']['operators'];
-        //Loop to get all operators datas
-        for (int i = 0; i < operatorsDatas.length; i++) {
-          //REQUEST TO GET OPERATOR DATAS BY ID
-          int id = operatorsDatas[i]['id'];
-          operatorsProvider.getAllOperatorsDatas(id).then((datas) {
-            if (datas != null) {
-              setState(() {
-                localOperators['operator_$id'] = datas['data'];
-              });
-            } else {
-              print(
-                  "Erreur de récupération des données de l'operateur en arrère plan");
-            }
-          });
-        }
-        print("Operators : ${localOperators.length}\n");
-      } else {
-        print(
-            "Erreur de récupération des données des operateurs en arrère plan");
-      }
-    });
-  }
-
-  void saveOperatorsToInLocal() {
-    jsonStore.setItem('localOperators', localOperators);
-  }
-
   void getActiveOperator(int id) {
     setState(() {
       for (int i = 0; i < operators.length; i++) {
         if (operators[i].id == id) {
           operators[i].isActive = true;
-          operatorId = operatorsChoose[i].id;
+          operatorId = operators[i].id;
         } else {
           operators[i].isActive = false;
         }
       }
     });
-    //After loop, get content of this current operator
-    getCurrentOperatorDatas(operatorId);
+    if (localOperators.length == 0) {
+      //After loop, get content of this current operator
+      getCurrentOperatorDatas(operatorId);
+    } else {
+      getLocalCurrentOperatorDatasById(operatorId);
+    }
   }
 
   void getActiveCategory(int index) {
     setState(() {
-      for (int i = 0; i < categories.length; i++) {
-        if (i == index) {
-          categories[i].isActive = true;
-          print("Index $index");
-        } else {
-          categories[i].isActive = false;
-        }
-      }
+      currentCategoryIndex = index;
     });
   }
 
-  void getCurrentOperatorDatas(int id) {
+  void getCurrentOperatorDatas(int operatorId) {
     setState(() {
       //start Loading of operator datas
       operatorDatasLoading = true;
-      operatorsProvider.getAllOperatorsDatas(operatorId).then((datas) {
-        //Stop Loading of operator datas
+      if (localOperators.length == 0) {
+        operatorsProvider.getAllOperatorsDatas(operatorId).then((datas) {
+          //Stop Loading of operator datas
+          operatorDatasLoading = false;
+          if (datas != null) {
+            dynamic operatorDatas = datas['data'];
+            constructOperatorCategories(operatorDatas['categories']);
+          } else {
+            print("Erreur de récupération du contenu");
+          }
+        });
+      } else {
         operatorDatasLoading = false;
-        if (datas != null) {
-          dynamic operatorDatas = datas['data'];
-          constructOperatorCategories(operatorDatas['categories']);
-        } else {
-          print("Erreur de récupération du contenu");
-        }
-      });
+        getLocalCurrentOperatorDatasById(operatorId);
+      }
     });
   }
 
@@ -170,9 +143,6 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
       tabBarViewCategories = [];
       //CLEAR TABBAR CATEGORY LIST
       tabBarCategories = [];
-
-      //RESET CURRENT CATEGORY INDEX
-      currentCategoryIndex = 0;
 
       //GET TABS CONTENT
       for (int i = 0; i < operatorCategories.length; i++) {
@@ -210,25 +180,77 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
         } else {
           tabBarViewCategories.insert(i, CategoryEmpty());
         }
+      }
 
-        //UPDATE LENGTH OF TABCONTROLLER
-        _categoriesController =
-            TabController(length: categories.length, vsync: this);
-        _categoriesController.addListener(() {
-          setState(() {
-            currentCategoryIndex = _categoriesController.index;
-            getActiveCategory(currentCategoryIndex);
-          });
+      //UPDATE LENGTH OF TABCONTROLLER
+      _categoriesController = TabController(
+          length: categories.length,
+          vsync: this,
+          initialIndex: currentCategoryIndex);
+      _categoriesController.addListener(() {
+        setState(() {
+          currentCategoryIndex = _categoriesController.index;
+          getActiveCategory(currentCategoryIndex);
         });
+      });
+    });
+  }
+
+  //LOCAL FONCTION===================================================
+  //Méthode permettant de récupérer tous les opérateurs et leurs données depuis l'API
+  void getAllOperatorsDatasToSaveLocal() {
+    operatorsProvider.getAllOperators().then((datas) {
+      if (datas != null) {
+        List<dynamic> operatorsDatas = datas['data']['operators'];
+        //Loop to get all operators datas
+        for (int i = 0; i < operatorsDatas.length; i++) {
+          //REQUEST TO GET OPERATOR DATAS BY ID
+          int id = operatorsDatas[i]['id'];
+          operatorsProvider.getAllOperatorsDatas(id).then((datas) {
+            if (datas != null) {
+              setState(() {
+                onlineOperators.addAll({
+                  'operator_${i + 1}': datas['data'],
+                });
+              });
+            } else {
+              print(
+                  "Erreur de récupération des données de l'operateur en arrère plan");
+            }
+          });
+        }
+      } else {
+        print(
+            "Erreur de récupération des données des operateurs en arrère plan");
       }
     });
   }
 
+  //Méthode permettant de récupérer toutes les données de l'opérateur en cours en local
+  void getLocalCurrentOperatorDatasById(int id) {
+    for (int i = 1; i <= localOperators.length; i++) {
+      if (localOperators['operator_$i']['operator']['id'] == id) {
+        constructOperatorCategories(
+            localOperators['operator_$id']['categories']);
+      }
+    }
+  }
+
+  //Méthode permettant d'enrégistrer tous les opérateurs et leurs données dans le fichier local json
+  void saveOperatorsInLocal() {
+    //jsonStore.clearDataBase();
+    jsonStore.setItem('localOperators', onlineOperators);
+    print("Saved in local");
+  }
+  //=================================================================
+
   @override
   Widget build(BuildContext context) {
     //Save operators on json file when all datas get
-    print(localOperators.length);
-    if (operators.length == localOperators.length) {}
+    if (operators.length == onlineOperators.length) {
+      saveOperatorsInLocal();
+    }
+
     return WillPopScope(
       onWillPop: () async {
         if (!searchMode && !more && !about && !notification && !whatNew) {
@@ -304,7 +326,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                                       highlightColor:
                                                           Colors.transparent,
                                                       onTap: () {
-                                                        setState(() {});
+                                                        jsonStore.deleteItem(
+                                                            'localOperators');
+                                                        //setState(() {});
                                                       },
                                                       child: Image.asset(
                                                         'assets/images/logo.png',
@@ -414,6 +438,8 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                           child: DefaultTabController(
                                               length: categories.length,
                                               // length of tabs
+                                              initialIndex:
+                                                  currentCategoryIndex,
                                               child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment

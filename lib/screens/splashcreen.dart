@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:json_store/json_store.dart';
 import 'package:mysharps/core/models/category_model.dart';
 import 'package:mysharps/core/models/operator_model.dart';
 import 'package:mysharps/core/providers/categories_provider.dart';
@@ -35,20 +36,49 @@ class _SplashcreenState extends State<Splashcreen> {
   late CategoriesProvider categoriesProvider;
   late CountriesProvider countriesProvider;
   late OperatorsProvider operatorsProvider;
+  late JsonStore jsonStore;
 
+  @override
+  void initState() {
+    super.initState();
+    //INITIALIZE CATEGORIES PROVIDER
+    categoriesProvider = new CategoriesProvider();
+    countriesProvider = new CountriesProvider();
+    operatorsProvider = new OperatorsProvider();
+    jsonStore = new JsonStore();
+    startAnimation();
+    getOperatorsToLocalJsonFile();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  //Méthode permettant de lancer une animation de chargement du contenu
   void startAnimation() {
     splashTimer = Timer.periodic(Duration(milliseconds: 900), (Timer t) {
       setState(() {
         animationStarted = !animationStarted;
         if (contentGet) {
           splashTimer.cancel();
-          Navigator.push(context,
-              PageTransition(type: PageTransitionType.fade, child: Onboard1()));
+          if (localOperators.length != 0) {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.fade, child: UssdList()));
+          } else {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.fade, child: Onboard1()));
+          }
         }
       });
     });
   }
 
+  //Méthode permettant de récupérer tous les opérateurs uniquement depuis l'api
   void getOperators() {
     operatorsProvider.getAllOperators().then((datas) {
       if (datas != null) {
@@ -98,21 +128,45 @@ class _SplashcreenState extends State<Splashcreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //INITIALIZE CATEGORIES PROVIDER
-    categoriesProvider = new CategoriesProvider();
-    countriesProvider = new CountriesProvider();
-    operatorsProvider = new OperatorsProvider();
-    startAnimation();
-    //getCategories();
-    getOperators();
+  //Méthode permettant de récupérer tous les opérateurs et leurs données depuis le fichier local json
+  void getOperatorsToLocalJsonFile() async {
+    jsonStore.getItem('localOperators').then((datas) {
+      if (datas != null) {
+        setState(() {
+          localOperators = datas;
+          createLocalOperatorsListModel(datas);
+          print("J'ai déjà les données en local");
+        });
+      } else {
+        print("Je recupère pour la première fois");
+        getOperators();
+      }
+    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  //Méthode permettant de créer une liste de modèles de tous les opérateurs
+  void createLocalOperatorsListModel(dynamic datas) {
+    setState(() {
+      for (int i = 0; i < localOperators.length; i++) {
+        dynamic _operator = localOperators['operator_${i + 1}']['operator'];
+        //print("Identifiant operateur : $i");
+        OperatorModel operatorModel = new OperatorModel.fromJson({
+          "id": _operator['id'],
+          "name": _operator['name'],
+          "description": _operator['description'],
+          "photo": _operator['photo'],
+          "state": _operator['state'],
+          "logo": _operator['logo'],
+          "color": Functions.getColorCode(_operator['color']),
+          "slogan": _operator['slogan'],
+          "isActive": i == 0 ? true : false
+        });
+        operators.add(operatorModel);
+      }
+      //DEFAULT CURRENT operatorId
+      operatorId = operators[0].id;
+      contentGet = true;
+    });
   }
 
   @override
