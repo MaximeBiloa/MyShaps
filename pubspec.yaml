@@ -32,6 +32,7 @@ dependencies:
   page_transition: ^2.0.4
   http: ^0.13.3
   shimmer: ^2.0.0
+  json_store: ^1.4.0
 
 dev_dependencies:
   flutter_test:

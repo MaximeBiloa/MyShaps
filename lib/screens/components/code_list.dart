@@ -33,7 +33,7 @@ class _CodeListState extends State<CodeList> {
       });
       code.children = children[i]['children'].length != 0
           ? getListCode(children[i]['children'])
-          : ['cool'];
+          : [];
 
       listCode.insert(i, code);
     }

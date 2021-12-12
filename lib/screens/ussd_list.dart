@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:json_store/json_store.dart';
 import 'package:mysharps/core/models/category_model.dart';
 import 'package:mysharps/core/models/code_model.dart';
 import 'package:mysharps/core/providers/categories_provider.dart';
@@ -47,16 +48,23 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
 
   late TextEditingController searchValue;
   late FocusNode searchFocus;
+  late JsonStore jsonStore;
 
   @override
   void initState() {
     super.initState();
+
     searchValue = new TextEditingController();
     searchFocus = new FocusNode();
+    jsonStore = new JsonStore();
 
     //INITIALIZE CATEGORIES PROVIDER
     categoriesProvider = new CategoriesProvider();
     operatorsProvider = new OperatorsProvider();
+
+    //BACK REQUEST TO GET OPERATORS DATAS
+    allOperatorsDatas();
+    //======================================
 
     //INITIALIZE CATEGORIES CONTROLLER;
     _categoriesController =
@@ -76,6 +84,37 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
   void dispose() {
     _categoriesController.dispose();
     super.dispose();
+  }
+
+  void allOperatorsDatas() {
+    operatorsProvider.getAllOperators().then((datas) {
+      if (datas != null) {
+        List<dynamic> operatorsDatas = datas['data']['operators'];
+        //Loop to get all operators datas
+        for (int i = 0; i < operatorsDatas.length; i++) {
+          //REQUEST TO GET OPERATOR DATAS BY ID
+          int id = operatorsDatas[i]['id'];
+          operatorsProvider.getAllOperatorsDatas(id).then((datas) {
+            if (datas != null) {
+              setState(() {
+                localOperators['operator_$id'] = datas['data'];
+              });
+            } else {
+              print(
+                  "Erreur de récupération des données de l'operateur en arrère plan");
+            }
+          });
+        }
+        print("Operators : ${localOperators.length}\n");
+      } else {
+        print(
+            "Erreur de récupération des données des operateurs en arrère plan");
+      }
+    });
+  }
+
+  void saveOperatorsToInLocal() {
+    jsonStore.setItem('localOperators', localOperators);
   }
 
   void getActiveOperator(int id) {
@@ -187,6 +226,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //Save operators on json file when all datas get
+    print(localOperators.length);
+    if (operators.length == localOperators.length) {}
     return WillPopScope(
       onWillPop: () async {
         if (!searchMode && !more && !about && !notification && !whatNew) {

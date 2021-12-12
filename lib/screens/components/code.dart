@@ -19,17 +19,28 @@ class _CodesState extends State<Codes> {
   void initState() {
     super.initState();
     children = [];
-    setState(() {
-      for (int i = 0; i < widget.codeModel.children.length; i++) {
-        children.insert(i, Codes(codeModel: widget.codeModel.children[i]));
-      }
-    });
-    childrenList = new Column(
-      children: children,
-    );
+    //constructChildren();
   }
 
-  void test() {}
+  Widget constructChildren() {
+    setState(() {
+      children = [];
+      for (int i = 0; i < widget.codeModel.children.length; i++) {
+        children.insert(
+            i,
+            //Expanded(
+            // child: Text('Je suis ici'),
+            // )); //
+            Codes(codeModel: widget.codeModel.children[i]));
+      }
+    });
+    return new ListView(
+      children: children,
+    );
+
+    /* if (widget.codeModel.isActive)
+                        Expanded(child: childrenList)*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,35 +60,37 @@ class _CodesState extends State<Codes> {
           });
         },
         child: Container(
-          margin: EdgeInsets.only(bottom: 18),
+          margin: EdgeInsets.only(bottom: 8, top: 10),
           width: context.screenWidth,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.codeModel.level == 1)
-                Container(
-                  height: 70,
-                  width: 8,
-                  decoration: BoxDecoration(
-                      color: widget.codeModel.color,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          bottomLeft: Radius.circular(4))),
-                ),
+              Container(
+                height: 80,
+                width: widget.codeModel.level != 1 ? 1 : 8,
+                decoration: BoxDecoration(
+                    color: widget.codeModel.color,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        bottomLeft: Radius.circular(4))),
+              ),
               Expanded(
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 200),
                   curve: Curves.decelerate,
                   height: widget.codeModel.isActive
                       ? (double.parse(
-                          (90 * widget.codeModel.children.length).toString()))
-                      : 70,
+                          (80 * widget.codeModel.children.length).toString()))
+                      : 80,
                   decoration: BoxDecoration(
                       color: widget.codeModel.level == 1
                           ? widget.codeModel.color.withOpacity(0.1)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(7)),
-                  padding: EdgeInsets.only(left: 20, right: 10),
+                  padding: EdgeInsets.only(
+                      left: 20,
+                      right: 10,
+                      top: widget.codeModel.isActive ? 15 : 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -99,16 +112,20 @@ class _CodesState extends State<Codes> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold)),
                                   ),
-                                  SizedBox(width: 8),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    color: widget.codeModel.color,
-                                  ),
+                                  if (widget.codeModel.level == 1)
+                                    SizedBox(width: 8),
+                                  if (widget.codeModel.level == 1)
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: widget.codeModel.color,
+                                    ),
                                 ],
                               ),
                             ),
                             SizedBox(height: 5),
                             Text('${widget.codeModel.description}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     color: Color(0xFF95989A),
                                     fontFamily: Fonts.fontMedium,
@@ -117,8 +134,9 @@ class _CodesState extends State<Codes> {
                           ],
                         ),
                       ),
-                      /*if (widget.codeModel.isActive)
-                        Expanded(child: childrenList)*/
+                      widget.codeModel.isActive
+                          ? Expanded(child: constructChildren())
+                          : Container()
                     ],
                   ),
                 ),

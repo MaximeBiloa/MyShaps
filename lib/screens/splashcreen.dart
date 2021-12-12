@@ -53,7 +53,7 @@ class _SplashcreenState extends State<Splashcreen> {
     operatorsProvider.getAllOperators().then((datas) {
       if (datas != null) {
         dynamic alloperators = datas['data']['operators'];
-        print(datas);
+        //print(datas);
         setState(() {
           //GET ALL OPERATORS CONTENT FOR CHOOSE
           for (int i = 0; i < alloperators.length; i++) {

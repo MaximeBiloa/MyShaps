@@ -61,3 +61,6 @@ List<Widget> tabBarViewCategories = [];
 
 //TabBarView
 List<Widget> tabBarViewOperators = [];
+
+//Local storage of All Operators
+Map<String, dynamic> localOperators = {};
