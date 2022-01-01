@@ -41,6 +41,9 @@ class _SplashcreenState extends State<Splashcreen> {
   @override
   void initState() {
     super.initState();
+
+    //SET STATUBARCOLOR
+    Functions.setStatuBarColor();
     //INITIALIZE CATEGORIES PROVIDER
     categoriesProvider = new CategoriesProvider();
     countriesProvider = new CountriesProvider();
@@ -48,6 +51,7 @@ class _SplashcreenState extends State<Splashcreen> {
     jsonStore = new JsonStore();
     startAnimation();
     getOperatorsToLocalJsonFile();
+    //getOperators();
   }
 
   @override
@@ -63,12 +67,12 @@ class _SplashcreenState extends State<Splashcreen> {
         if (contentGet) {
           splashTimer.cancel();
           if (localOperators.length != 0) {
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 PageTransition(
                     type: PageTransitionType.fade, child: UssdList()));
           } else {
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 PageTransition(
                     type: PageTransitionType.fade, child: Onboard1()));

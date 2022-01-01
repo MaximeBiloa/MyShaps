@@ -7,6 +7,7 @@ import 'package:mysharps/utils/functions.dart';
 class CodeList extends StatefulWidget {
   CodeList({required this.category});
   CategoryModel category;
+  
 
   @override
   _CodeListState createState() => _CodeListState();
@@ -68,6 +69,9 @@ class _CodeListState extends State<CodeList> {
 
             return Codes(
               codeModel: code,
+              onTap: () {
+                print("Je suis ici");
+              },
             );
           }),
     );

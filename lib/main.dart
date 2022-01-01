@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mysharps/screens/code_screen.dart';
 import 'package:mysharps/screens/onboard_1.dart';
 import 'package:mysharps/screens/onboard_2.dart';
 import 'package:mysharps/screens/onboard_3.dart';
@@ -15,10 +16,11 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "MySharp's",
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
