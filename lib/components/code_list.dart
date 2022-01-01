@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mysharps/components/code.dart';
 import 'package:mysharps/core/models/category_model.dart';
 import 'package:mysharps/core/models/code_model.dart';
-import 'package:mysharps/screens/components/code.dart';
 import 'package:mysharps/utils/functions.dart';
 
 class CodeList extends StatefulWidget {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mysharps/core/models/code_model.dart';
-import 'package:mysharps/screens/data/button_action.dart';
-import 'package:mysharps/screens/data/variables.dart';
+import 'package:mysharps/data/button_action.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/fonts.dart';
 import 'package:mysharps/utils/extensions.dart';

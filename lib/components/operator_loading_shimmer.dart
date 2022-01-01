@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mysharps/screens/components/container_template.dart';
+import 'package:mysharps/components/container_template.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/extensions.dart';
 import 'package:mysharps/utils/fonts.dart';

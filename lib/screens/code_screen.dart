@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mysharps/components/code.dart';
 import 'package:mysharps/core/models/code_model.dart';
-import 'package:mysharps/screens/components/code.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/extensions.dart';
 import 'package:mysharps/utils/fonts.dart';
