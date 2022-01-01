@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:mysharps/data/variables.dart';
+import 'package:mysharps/utils/colors.dart';
 
 class Functions {
   static Color getColorCode(String color) {
@@ -9,7 +11,10 @@ class Functions {
   }
 
   static setStatuBarColor() async {
-    //await FlutterStatusbarManager.setColor(Colors.white, animated: true);
-    //await FlutterStatusbarManager.setStyle(StatusBarStyle.DARK_CONTENT);
+    await FlutterStatusbarManager.setColor(
+        themeMode ? darkModeColorPrimary : Colors.white,
+        animated: false);
+    await FlutterStatusbarManager.setStyle(
+        themeMode ? StatusBarStyle.LIGHT_CONTENT : StatusBarStyle.DARK_CONTENT);
   }
 }

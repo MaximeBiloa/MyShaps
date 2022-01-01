@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mysharps/data/variables.dart';
 import 'package:mysharps/utils/fonts.dart';
 
 class MenuOption extends StatefulWidget {
@@ -22,6 +23,7 @@ class _MenuOptionState extends State<MenuOption> {
           ),
           Text('${widget.optionLabel}',
               style: TextStyle(
+                  color: themeMode ? Colors.white : Colors.black,
                   fontFamily: Fonts.fontMedium,
                   fontSize: 16,
                   fontWeight: FontWeight.bold)),

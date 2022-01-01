@@ -9,3 +9,7 @@ Color orangeColor = Color(0xFFFF9300);
 Color marrowColor = Color(0xFF93612F);
 Color greyColor = Color(0xFFC3C3C3);
 Color redColor = Color(0xFFFF2121);
+
+//DARK MODE COLOR
+Color darkModeColorPrimary = Color(0XFF1B2124);
+Color darkModeColorSecondary = Color(0XFFE2E2E2);

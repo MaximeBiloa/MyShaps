@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mysharps/data/variables.dart';
 import 'package:mysharps/utils/fonts.dart';
 
 class CategoryEmpty extends StatefulWidget {
@@ -22,7 +23,7 @@ class _CategoryEmptyState extends State<CategoryEmpty> {
               style: TextStyle(
                   fontFamily: Fonts.fontBold,
                   fontSize: 26,
-                  color: Colors.black,
+                  color: themeMode ? Colors.grey.shade400 : Colors.black,
                   fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
           Text('Il n’y a rien ici pour le moment',
@@ -30,7 +31,9 @@ class _CategoryEmptyState extends State<CategoryEmpty> {
               style: TextStyle(
                   fontFamily: Fonts.fontRegular,
                   fontSize: 12,
-                  color: Colors.black.withOpacity(0.4),
+                  color: themeMode
+                      ? Colors.grey.shade600
+                      : Colors.black.withOpacity(0.4),
                   fontWeight: FontWeight.w600)),
         ],
       ),

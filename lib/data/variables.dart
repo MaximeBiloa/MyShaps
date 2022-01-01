@@ -67,3 +67,6 @@ Map<String, dynamic> localOperators = {};
 
 //Online storage of All Operators
 Map<String, dynamic> onlineOperators = {};
+
+//Theme (LIGHT OR DARK)
+bool themeMode = false;

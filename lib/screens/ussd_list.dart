@@ -40,7 +40,6 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
   bool notification = false;
   bool whatNew = false;
   bool about = false;
-  bool enablePackage = false;
   bool operatorDatasLoading = true;
   bool openCodeChildren = false;
   bool backAnimation = false;
@@ -351,7 +350,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
       height: context.screenHeight - 100,
       width: context.screenWidth,
       padding: EdgeInsets.only(left: 10, right: 10, bottom: 20),
-      color: Colors.white,
+      color: themeMode ? Colors.transparent : Colors.white,
       child: searchResultList.length == 0
           ? Container(
               padding: EdgeInsets.only(left: 21, right: 21),
@@ -376,7 +375,10 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                   height: 80,
                                   width: 8,
                                   decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: themeMode
+                                          ? darkModeColorSecondary
+                                              .withOpacity(0.2)
+                                          : Colors.black,
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(4),
                                           bottomLeft: Radius.circular(4))),
@@ -391,7 +393,10 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         topRight: Radius.circular(7),
                                         bottomRight: Radius.circular(7),
                                       ),
-                                      color: Colors.white,
+                                      color: themeMode
+                                          ? darkModeColorSecondary
+                                              .withOpacity(0.1)
+                                          : Colors.white,
                                     ),
                                     padding: EdgeInsets.only(
                                         left: 20, right: 10, top: 0),
@@ -415,6 +420,10 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                           style: TextStyle(
+                                                              color: themeMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
                                                               fontFamily: Fonts
                                                                   .fontMedium,
                                                               fontSize: 18,
@@ -549,7 +558,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
         body: operatorDatasLoading
             ? OperatorLoadingShimmer()
             : Container(
-                color: Colors.white,
+                color: themeMode ? darkModeColorPrimary : Colors.white,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -559,7 +568,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                       child: Stack(
                         children: [
                           Container(
-                            color: Colors.white,
+                            color: Colors.transparent,
                             child: Column(
                               children: [
                                 Container(
@@ -567,139 +576,144 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                       top: 20, left: 18, right: 18),
                                   height: 165,
                                   decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: themeMode
+                                          ? darkModeColorSecondary
+                                              .withOpacity(0.1)
+                                          : Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
                                           color: Colors.black.withOpacity(0.1),
                                           width: 1),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.shade200,
-                                            spreadRadius: 1,
-                                            blurRadius: 1),
-                                      ]),
-                                  child: Container(
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 12),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                  child: Container(
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Material(
-                                                      color: Colors.transparent,
-                                                      child: InkWell(
-                                                        hoverColor:
-                                                            Colors.transparent,
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        highlightColor:
-                                                            Colors.transparent,
-                                                        onTap: () {
-                                                          //jsonStore.deleteItem(
-                                                          //'localOperators');
-                                                          //setState(() {});
-                                                        },
-                                                        child: Image.asset(
-                                                          'assets/images/logo.png',
-                                                          width: 40,
-                                                        ),
+                                      boxShadow: themeMode
+                                          ? []
+                                          : [
+                                              BoxShadow(
+                                                  color: Colors.grey.shade200,
+                                                  spreadRadius: 1,
+                                                  blurRadius: 1),
+                                            ]),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 12),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                                child: Container(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      onTap: () {
+                                                        //jsonStore.deleteItem(
+                                                        //'localOperators');
+                                                        //setState(() {});
+                                                      },
+                                                      child: Image.asset(
+                                                        'assets/images/logo.png',
+                                                        width: 40,
                                                       ),
                                                     ),
-                                                    SizedBox(
-                                                      width: 14,
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text('MYSHARP’S',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontFamily: Fonts
-                                                                    .fontMedium,
-                                                                fontSize: 14,
-                                                                letterSpacing:
-                                                                    3,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                        SizedBox(
-                                                          height: 1.86,
-                                                        ),
-                                                        Text('CAMEROON',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.25),
-                                                                fontFamily: Fonts
-                                                                    .fontMedium,
-                                                                fontSize: 11,
-                                                                letterSpacing:
-                                                                    2.4,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              )),
-                                              SizedBox(
-                                                width: 69,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 14,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text('MYSHARP’S',
+                                                          style: TextStyle(
+                                                              color: themeMode
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
+                                                              fontFamily: Fonts
+                                                                  .fontMedium,
+                                                              fontSize: 14,
+                                                              letterSpacing: 3,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      SizedBox(
+                                                        height: 1.86,
+                                                      ),
+                                                      Text('CAMEROON',
+                                                          style: TextStyle(
+                                                              color: themeMode
+                                                                  ? Colors.grey
+                                                                      .shade600
+                                                                  : Colors.black
+                                                                      .withOpacity(
+                                                                          0.25),
+                                                              fontFamily: Fonts
+                                                                  .fontMedium,
+                                                              fontSize: 11,
+                                                              letterSpacing:
+                                                                  2.4,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                    ],
+                                                  )
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                              child: Container(
-                                            width: context.screenWidth,
-                                            decoration: BoxDecoration(
-                                                color: Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 0),
-                                            child: Center(
-                                              child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  shrinkWrap: true,
-                                                  itemCount: operators.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return OperatorButton(
-                                                      operatorModel:
-                                                          operators[index],
-                                                      onTap: () {
-                                                        getActiveOperator(
-                                                            operators[index]
-                                                                .id);
-                                                      },
-                                                    );
-                                                  }),
+                                            )),
+                                            SizedBox(
+                                              width: 69,
                                             ),
-                                          )),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                            child: Container(
+                                          width: context.screenWidth,
+                                          decoration: BoxDecoration(
+                                              color: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 0),
+                                          child: Center(
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemCount: operators.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return OperatorButton(
+                                                    operatorModel:
+                                                        operators[index],
+                                                    onTap: () {
+                                                      getActiveOperator(
+                                                          operators[index].id);
+                                                    },
+                                                  );
+                                                }),
+                                          ),
+                                        )),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
@@ -736,13 +750,23 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                                               isScrollable:
                                                                   true,
                                                               indicatorColor:
-                                                                  Colors.black,
+                                                                  themeMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
                                                               indicatorWeight:
                                                                   1.5,
                                                               labelColor:
-                                                                  Colors.black,
-                                                              unselectedLabelColor:
-                                                                  Colors.black
+                                                                  themeMode
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                              unselectedLabelColor: themeMode
+                                                                  ? Colors.grey
+                                                                      .shade600
+                                                                  : Colors.black
                                                                       .withOpacity(
                                                                           0.25),
                                                               labelStyle: TextStyle(
@@ -769,8 +793,10 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                                                         .transparent,
                                                                     border: Border(
                                                                         top: BorderSide(
-                                                                            color:
-                                                                                greyColor,
+                                                                            color: themeMode
+                                                                                ? Colors
+                                                                                    .grey.shade800
+                                                                                : greyColor,
                                                                             width:
                                                                                 0.5))),
                                                                 child: TabBarView(
@@ -880,20 +906,13 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          if (more ||
-                              whatNew ||
-                              notification ||
-                              about ||
-                              enablePackage)
+                          if (more || whatNew || notification || about)
                             Positioned.fill(
                               child: AnimatedOpacity(
-                                opacity: (more ||
-                                        whatNew ||
-                                        notification ||
-                                        about ||
-                                        enablePackage)
-                                    ? 1
-                                    : 0,
+                                opacity:
+                                    (more || whatNew || notification || about)
+                                        ? 1
+                                        : 0,
                                 duration: Duration(milliseconds: 2000),
                                 curve: Curves.decelerate,
                                 child: Material(
@@ -908,17 +927,16 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         notification = false;
                                         whatNew = false;
                                         about = false;
-                                        enablePackage = false;
                                       });
                                     },
                                     child: Center(
                                       child: BackdropFilter(
                                         filter: ImageFilter.blur(
-                                          sigmaX: 8.0,
-                                          sigmaY: 8.0,
-                                        ),
+                                            sigmaX: 10.0,
+                                            sigmaY: 10.0,
+                                            tileMode: TileMode.decal),
                                         child: Container(
-                                          color: Colors.grey.withOpacity(0),
+                                          color: Colors.transparent,
                                         ),
                                       ),
                                     ),
@@ -932,126 +950,210 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                             right: 17,
                             top: more ? 105 : 180,
                             child: IgnorePointer(
-                              ignoring: false,
+                              ignoring: more ? false : true,
                               child: AnimatedOpacity(
                                 opacity: more ? 1 : 0,
                                 duration: Duration(milliseconds: 500),
                                 curve: Curves.decelerate,
-                                child: IgnorePointer(
-                                  ignoring: more ? false : true,
-                                  child: Container(
-                                    width: 272,
-                                    height: 275,
-                                    padding: EdgeInsets.all(26),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.grey.shade200,
-                                              spreadRadius: 2,
-                                              blurRadius: 3),
-                                        ]),
-                                    child: Column(
-                                      children: [
-                                        Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            hoverColor: Colors.transparent,
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                            onTap: () {
-                                              setState(() {
-                                                notification = true;
-                                                more = false;
-                                              });
-                                            },
-                                            child: MenuOption(
-                                                optionIcon:
-                                                    'assets/images/notification-icon.png',
-                                                optionLabel: 'Notifications'),
-                                          ),
-                                        ),
-                                        SizedBox(height: 35),
-                                        Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            hoverColor: Colors.transparent,
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                            onTap: () {
-                                              setState(() {
-                                                whatNew = true;
-                                                more = false;
-                                              });
-                                            },
-                                            child: MenuOption(
-                                                optionIcon:
-                                                    'assets/images/star-icon.png',
-                                                optionLabel: 'What’s new'),
-                                          ),
-                                        ),
-                                        SizedBox(height: 35),
-                                        Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            hoverColor: Colors.transparent,
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                            onTap: () {
-                                              setState(() {
-                                                about = true;
-                                                more = false;
-                                              });
-                                            },
-                                            child: MenuOption(
-                                                optionIcon:
-                                                    'assets/images/information-icon.png',
-                                                optionLabel: 'About'),
-                                          ),
-                                        ),
-                                        SizedBox(height: 40),
-                                        Container(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: themeMode
+                                        ? darkModeColorPrimary
+                                        : Colors.white,
+                                  ),
+                                  child: IgnorePointer(
+                                    ignoring: false,
+                                    child: AnimatedOpacity(
+                                      opacity: more ? 1 : 0,
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.decelerate,
+                                      child: IgnorePointer(
+                                        ignoring: more ? false : true,
+                                        child: Container(
                                           width: 272,
+                                          height: 275,
+                                          padding: EdgeInsets.all(26),
+                                          decoration: BoxDecoration(
+                                              color: themeMode
+                                                  ? darkModeColorSecondary
+                                                      .withOpacity(0.1)
+                                                  : Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              boxShadow: themeMode
+                                                  ? []
+                                                  : [
+                                                      BoxShadow(
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          spreadRadius: 1,
+                                                          blurRadius: 3),
+                                                    ]),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
                                             children: [
-                                              Text('MySharp’s v0.1.0',
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          Fonts.fontMedium,
-                                                      fontSize: 16,
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              SizedBox(height: 5),
-                                              Text('Powered by TheBrains',
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          Fonts.fontLight,
-                                                      fontSize: 12,
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold)),
+                                              Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    setState(() {
+                                                      notification = true;
+                                                      more = false;
+                                                    });
+                                                  },
+                                                  child: MenuOption(
+                                                      optionIcon: themeMode
+                                                          ? 'assets/images/notification-icon-dark.png'
+                                                          : 'assets/images/notification-icon.png',
+                                                      optionLabel:
+                                                          'Notifications'),
+                                                ),
+                                              ),
+                                              SizedBox(height: 35),
+                                              Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    setState(() {
+                                                      whatNew = true;
+                                                      more = false;
+                                                    });
+                                                  },
+                                                  child: MenuOption(
+                                                      optionIcon: themeMode
+                                                          ? 'assets/images/star-icon-dark.png'
+                                                          : 'assets/images/star-icon.png',
+                                                      optionLabel:
+                                                          'What’s new'),
+                                                ),
+                                              ),
+                                              SizedBox(height: 35),
+                                              Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    setState(() {
+                                                      about = true;
+                                                      more = false;
+                                                    });
+                                                  },
+                                                  child: MenuOption(
+                                                      optionIcon: themeMode
+                                                          ? 'assets/images/information-icon-dark.png'
+                                                          : 'assets/images/information-icon.png',
+                                                      optionLabel: 'About'),
+                                                ),
+                                              ),
+                                              SizedBox(height: 40),
+                                              Container(
+                                                width: 272,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              'MySharp’s v0.1.0',
+                                                              style: TextStyle(
+                                                                  fontFamily: Fonts
+                                                                      .fontMedium,
+                                                                  fontSize: 16,
+                                                                  color: themeMode
+                                                                      ? Colors
+                                                                          .grey
+                                                                          .shade600
+                                                                      : Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                          SizedBox(height: 5),
+                                                          Text(
+                                                              'Powered by TheBrains',
+                                                              style: TextStyle(
+                                                                  fontFamily: Fonts
+                                                                      .fontLight,
+                                                                  fontSize: 12,
+                                                                  color: themeMode
+                                                                      ? Colors
+                                                                          .grey
+                                                                          .shade700
+                                                                      : Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        child: Material(
+                                                      color: Colors.transparent,
+                                                      child: InkWell(
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          setState(() {
+                                                            themeMode =
+                                                                !themeMode;
+                                                          });
+                                                        },
+                                                        child: Image.asset(
+                                                          themeMode
+                                                              ? 'assets/images/dark-icon.png'
+                                                              : 'assets/images/light-icon.png',
+                                                          width: 30,
+                                                        ),
+                                                      ),
+                                                    ))
+                                                  ],
+                                                ),
+                                              )
                                             ],
                                           ),
-                                        )
-                                      ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          EnablePackage(
-                              position: enablePackage
-                                  ? context.screenHeight / 2
-                                  : context.screenHeight),
                           IgnorePointer(
                             child: OverflowBox(
                               maxWidth: context.screenWidth,
@@ -1070,31 +1172,42 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                       });
                                     },
                                     child: AnimatedContainer(
-                                      margin: EdgeInsets.only(
-                                          left: context.screenWidth - 98,
-                                          bottom: context.screenHeight - 140),
-                                      curve: Curves.decelerate,
-                                      duration: Duration(
-                                          milliseconds: !about ? 700 : 200),
-                                      width: more ? 52 : 0,
-                                      height: more ? 52 : 0,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.grey.shade200,
-                                                spreadRadius: 3,
-                                                blurRadius: 3),
-                                          ]),
-                                    ),
+                                        margin: EdgeInsets.only(
+                                            left: context.screenWidth - 98,
+                                            bottom: context.screenHeight - 140),
+                                        curve: Curves.decelerate,
+                                        duration: Duration(
+                                            milliseconds: !about ? 700 : 200),
+                                        width: more ? 52 : 0,
+                                        height: more ? 52 : 0,
+                                        child: Center(
+                                          child: Container(
+                                              width: more ? 52 : 0,
+                                              height: more ? 52 : 0,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                  color: themeMode
+                                                      ? darkModeColorSecondary
+                                                          .withOpacity(0.1)
+                                                      : Colors.white,
+                                                  boxShadow: themeMode
+                                                      ? []
+                                                      : [
+                                                          BoxShadow(
+                                                              color: Colors.grey
+                                                                  .shade200,
+                                                              spreadRadius: 3,
+                                                              blurRadius: 3),
+                                                        ])),
+                                        )),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          if (!notification && !about && !enablePackage)
+                          if (!notification && !about)
                             Positioned(
                               top: 45,
                               right: 36.8,
@@ -1110,7 +1223,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                     });
                                   },
                                   child: Image.asset(
-                                    'assets/images/more-icon.png',
+                                    themeMode
+                                        ? 'assets/images/more-icon-dark.png'
+                                        : 'assets/images/more-icon.png',
                                     width: 25,
                                   ),
                                 ),
@@ -1130,16 +1245,22 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                             curve: Curves.decelerate,
                             child: AnimatedOpacity(
                               opacity: more ? 0 : 1,
-                              duration: Duration(milliseconds: 600),
-                              child: Container(
+                              duration: Duration(milliseconds: 200),
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 500),
                                 padding: EdgeInsets.only(right: 20, left: 20),
                                 width:
                                     searchMode ? context.screenWidth - 45 : 75,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: !searchMode
+                                        ? Colors.transparent
+                                        : themeMode
+                                            ? darkModeColorSecondary
+                                                .withOpacity(0.1)
+                                            : Colors.white,
                                     borderRadius: BorderRadius.circular(15.0),
-                                    boxShadow: !searchMode
+                                    boxShadow: (!searchMode || themeMode)
                                         ? []
                                         : [
                                             BoxShadow(
@@ -1161,7 +1282,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         style: TextStyle(
                                             fontFamily: Fonts.fontRegular,
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color: themeMode
+                                                ? Colors.white
+                                                : Colors.black,
                                             fontWeight: FontWeight.w600),
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
@@ -1173,9 +1296,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                               fontWeight: FontWeight.w600),
                                         ),
                                       )),
-                                    if (!notification &&
-                                        !about &&
-                                        !enablePackage)
+                                    if (!notification && !about)
                                       Material(
                                         color: Colors.transparent,
                                         child: InkWell(
@@ -1194,7 +1315,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                             });
                                           },
                                           child: Image.asset(
-                                            'assets/images/search-icon.png',
+                                            themeMode
+                                                ? 'assets/images/search-icon-dark.png'
+                                                : 'assets/images/search-icon.png',
                                             width: 25,
                                           ),
                                         ),
@@ -1225,8 +1348,8 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(15.0),
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.grey.shade200,
-                                  spreadRadius: 2.5,
+                                  color: Colors.grey.shade300,
+                                  spreadRadius: 1,
                                   blurRadius: 3),
                             ]),
                         child: Column(
@@ -1561,7 +1684,8 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                               height: context.screenHeight,
                               width: context.screenWidth,
                               padding: EdgeInsets.symmetric(horizontal: 30),
-                              color: Colors.white,
+                              color:
+                                  themeMode ? Colors.transparent : Colors.white,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -1572,7 +1696,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                       'Retrouvez instantanément les forfaits de votre opérateur téléphonique',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          color: Colors.black.withOpacity(0.3),
+                                          color: themeMode
+                                              ? Colors.grey.shade500
+                                              : Colors.black.withOpacity(0.3),
                                           fontFamily: Fonts.fontMedium,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600)),

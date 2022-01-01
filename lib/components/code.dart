@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:mysharps/components/dialogs/enable_package.dart';
 import 'package:mysharps/core/models/code_model.dart';
 import 'package:mysharps/data/button_action.dart';
+import 'package:mysharps/data/variables.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/fonts.dart';
 import 'package:mysharps/utils/extensions.dart';
@@ -91,33 +94,6 @@ class _CodesState extends State<Codes> {
     });
   }
 
-  Future<void> sendUssdRequest(String ussd_code) async {
-    //String _requestCode = "";
-    String _responseCode = "";
-    String _responseMessage = "";
-    try {
-      await Permission.phone.request();
-      if (!await Permission.phone.isGranted) {
-        throw Exception("permission missing");
-      }
-
-      SimData simData = await SimDataPlugin.getSimData();
-      await UssdAdvanced.sendUssd(
-          code: ussd_code, subscriptionId: simData.cards.first.subscriptionId);
-      //responseMessage = await UssdService.makeRequest(
-      //    simData.cards.first.subscriptionId, _requestCode);
-      setState(() {
-        //_responseMessage = responseMessage;
-      });
-    } on PlatformException catch (e) {
-      setState(() {
-        _responseCode = e is PlatformException ? e.code : "";
-        _responseMessage = e.message ?? '';
-      });
-      print("Erreur ici $_responseCode");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -139,7 +115,7 @@ class _CodesState extends State<Codes> {
                 curve: Curves.decelerate,
                 margin: EdgeInsets.only(bottom: 8, top: 10),
                 width: double.infinity, // context.screenWidth,
-                height: widget.codeModel.isActive ? context.screenHeight : 80,
+                height: 80,
                 color: widget.codeModel.isActive
                     ? widget.codeModel.color.withOpacity(0.1)
                     : Colors.transparent,
@@ -155,7 +131,6 @@ class _CodesState extends State<Codes> {
                         child: Icon(Icons.favorite,
                             color: widget.codeModel.color)),
                     Container(
-                      color: Colors.transparent,
                       child: AnimatedContainer(
                         duration: Duration(
                             milliseconds: widget.codeModel.isActive
@@ -172,6 +147,8 @@ class _CodesState extends State<Codes> {
                         ),
                         curve: Curves.decelerate,
                         child: Container(
+                          color:
+                              themeMode ? darkModeColorPrimary : Colors.white,
                           child: Row(
                             children: [
                               Expanded(
@@ -199,14 +176,12 @@ class _CodesState extends State<Codes> {
                                               height: 80,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(7),
-                                                  bottomRight: Radius.circular(
-                                                      widget.codeModel.isActive
-                                                          ? 0
-                                                          : 7),
+                                                  topRight: Radius.circular(0),
+                                                  bottomRight:
+                                                      Radius.circular(0),
                                                 ),
-                                                color: widget.codeModel.isActive
-                                                    ? widget.codeModel.color
+                                                color: themeMode
+                                                    ? darkModeColorSecondary
                                                         .withOpacity(0.1)
                                                     : Colors.white,
                                               ),
@@ -297,31 +272,60 @@ class _CodesState extends State<Codes> {
                                   ],
                                 ),
                               ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () {
-                                    sendUssdRequest(widget.codeModel.ussd_code);
-                                  },
+                              Container(
+                                height: 80,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(7),
+                                    bottomRight: Radius.circular(7),
+                                  ),
+                                  color: themeMode
+                                      ? darkModeColorSecondary.withOpacity(0.1)
+                                      : Colors.white,
+                                ),
+                                child: Center(
                                   child: Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                        color: widget.codeModel.color,
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    child: Center(
-                                      child: Text('#',
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: Fonts.fontRegular,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold)),
+                                    width: 40,
+                                    height: 40,
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        hoverColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () {
+                                          showMaterialModalBottomSheet(
+                                              context: context,
+                                              builder: (context) =>
+                                                  EnablePackage(
+                                                      codeModel:
+                                                          widget.codeModel),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              barrierColor: Colors.transparent);
+                                        },
+                                        child: Container(
+                                          height: 35,
+                                          width: 35,
+                                          decoration: BoxDecoration(
+                                              color: widget.codeModel.color,
+                                              borderRadius:
+                                                  BorderRadius.circular(12)),
+                                          child: Center(
+                                            child: Text('#',
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily:
+                                                        Fonts.fontRegular,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
