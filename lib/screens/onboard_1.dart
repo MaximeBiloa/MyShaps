@@ -8,6 +8,7 @@ import 'package:mysharps/screens/onboard_2.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/extensions.dart';
 import 'package:mysharps/utils/fonts.dart';
+import 'package:mysharps/utils/functions.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Onboard1 extends StatefulWidget {
@@ -21,6 +22,7 @@ class _Onboard1State extends State<Onboard1> {
   @override
   void initState() {
     super.initState();
+    //Functions.setStatuBarColor();
     Timer(Duration(milliseconds: 100), () {
       setState(() {
         animationStarted = true;
@@ -31,11 +33,11 @@ class _Onboard1State extends State<Onboard1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
           toolbarHeight: 0,
           elevation: 0,
           brightness: Brightness.dark,
-          backgroundColor: Colors.transparent),
+          backgroundColor: Colors.transparent),*/
       body: Container(
           width: context.screenWidth,
           height: context.screenHeight,

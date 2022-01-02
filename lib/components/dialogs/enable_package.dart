@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mysharps/core/models/code_model.dart';
+import 'package:mysharps/data/variables.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/extensions.dart';
 import 'package:mysharps/utils/fonts.dart';
+import 'package:mysharps/utils/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sim_data/sim_data.dart';
 import 'package:sim_data/sim_model.dart';
@@ -36,13 +38,22 @@ class _EnablePackageState extends State<EnablePackage> {
       //    simData.cards.first.subscriptionId, _requestCode);
       setState(() {
         //_responseMessage = responseMessage;
+
+        setState(() {
+          Functions.setStatuBarColor();
+        });
       });
     } on PlatformException catch (e) {
-      setState(() {
-        _responseCode = e is PlatformException ? e.code : "";
-        _responseMessage = e.message ?? '';
-      });
-      print("Erreur ici $_responseCode");
+      if (mounted) {
+        setState(() {
+          _responseCode = e is PlatformException ? e.code : "";
+          _responseMessage = e.message ?? '';
+        });
+        print("Erreur ici $_responseCode");
+        setState(() {
+          Functions.setStatuBarColor();
+        });
+      }
     }
   }
 
@@ -102,104 +113,129 @@ class _EnablePackageState extends State<EnablePackage> {
                     child: Container(
                       width: 272,
                       height: 200,
-                      padding: EdgeInsets.all(26),
                       decoration: BoxDecoration(
-                          color: Colors.white,
+                          color:
+                              themeMode ? darkModeColorPrimary : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.shade300,
-                                spreadRadius: 1,
-                                blurRadius: 3),
-                          ]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              child: Row(children: [
-                            Text('Activation',
-                                style: TextStyle(
-                                    fontFamily: Fonts.fontMedium,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold)),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Container(
-                                  height: 28,
-                                  decoration: BoxDecoration(
-                                      color: widget.codeModel.color
-                                          .withOpacity(0.2),
-                                      border: Border.all(
+                          boxShadow: themeMode
+                              ? []
+                              : [
+                                  BoxShadow(
+                                      color: Colors.grey.shade300,
+                                      spreadRadius: 1,
+                                      blurRadius: 3),
+                                ]),
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.all(26),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: themeMode
+                                ? darkModeColorSecondary.withOpacity(0.1)
+                                : Colors.white,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  child: Row(children: [
+                                Text('Activation',
+                                    style: TextStyle(
+                                        color: themeMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontFamily: Fonts.fontMedium,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold)),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                      height: 28,
+                                      decoration: BoxDecoration(
                                           color: widget.codeModel.color
-                                              .withOpacity(0.3)),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Center(
-                                    child: Text('${widget.codeModel.ussd_code}',
-                                        style: TextStyle(
-                                            color: widget.codeModel.color,
-                                            fontFamily: Fonts.fontMedium,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold)),
-                                  )),
-                            )
-                          ])),
-                          SizedBox(height: 12),
-                          Text('Êtes-vous sûr de vouloir activer ce code ?',
-                              style: TextStyle(
-                                  fontFamily: Fonts.fontRegular,
-                                  fontSize: 16,
-                                  height: 1.5,
-                                  color: Colors.black.withOpacity(0.3),
-                                  fontWeight: FontWeight.w600)),
-                          SizedBox(height: 30),
-                          Container(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                        hoverColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Non',
+                                              .withOpacity(0.2),
+                                          border: Border.all(
+                                              color: widget.codeModel.color
+                                                  .withOpacity(0.4)),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Center(
+                                        child: Text(
+                                            '${widget.codeModel.ussd_code}',
                                             style: TextStyle(
-                                                fontFamily: Fonts.fontRegular,
-                                                fontSize: 18,
-                                                color: Colors.black
-                                                    .withOpacity(0.6),
-                                                fontWeight: FontWeight.w600)))),
-                                SizedBox(width: 20),
-                                Container(
-                                  height: 20,
-                                  width: 1,
-                                  color: Colors.grey.shade500,
-                                ),
-                                SizedBox(width: 20),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                      hoverColor: Colors.transparent,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () {
-                                        Navigator.pop(context);
+                                                color: widget.codeModel.color,
+                                                fontFamily: Fonts.fontMedium,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold)),
+                                      )),
+                                )
+                              ])),
+                              SizedBox(height: 12),
+                              Text('Êtes-vous sûr de vouloir activer ce code ?',
+                                  style: TextStyle(
+                                      fontFamily: Fonts.fontRegular,
+                                      fontSize: 16,
+                                      height: 1.5,
+                                      color: themeMode
+                                          ? Colors.grey.shade400
+                                          : Colors.black.withOpacity(0.3),
+                                      fontWeight: FontWeight.w600)),
+                              SizedBox(height: 30),
+                              Container(
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                    Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                            hoverColor: Colors.transparent,
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Non',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        Fonts.fontRegular,
+                                                    fontSize: 18,
+                                                    color: themeMode
+                                                        ? Colors.grey.shade500
+                                                        : Colors.black
+                                                            .withOpacity(0.6),
+                                                    fontWeight:
+                                                        FontWeight.w600)))),
+                                    SizedBox(width: 20),
+                                    Container(
+                                      height: 20,
+                                      width: 1,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                    SizedBox(width: 20),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                          hoverColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () {
+                                            Navigator.pop(context);
 
-                                        sendUssdRequest(
-                                            widget.codeModel.ussd_code);
-                                      },
-                                      child: Text('Oui, je veux',
-                                          style: TextStyle(
-                                              fontFamily: Fonts.fontRegular,
-                                              fontSize: 18,
-                                              color: greenColor,
-                                              fontWeight: FontWeight.w600))),
-                                ),
-                              ]))
-                        ],
+                                            sendUssdRequest(
+                                                widget.codeModel.ussd_code);
+                                          },
+                                          child: Text('Oui, je veux',
+                                              style: TextStyle(
+                                                  fontFamily: Fonts.fontRegular,
+                                                  fontSize: 18,
+                                                  color: greenColor,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                    ),
+                                  ]))
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),

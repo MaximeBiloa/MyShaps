@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:json_store/json_store.dart';
 import 'package:mysharps/components/category_empty.dart';
 import 'package:mysharps/components/code.dart';
+import 'package:mysharps/components/codes_of_category.dart';
 import 'package:mysharps/components/enable_package.dart';
 import 'package:mysharps/components/menu_option.dart';
 import 'package:mysharps/components/notification_template.dart';
@@ -187,7 +188,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
 
         //CONSTRUCTION OF ALL CODE OF CATEGORIES
         if (category.codes.length != 0) {
-          tabBarViewCategories.insert(i, codeList(category));
+          tabBarViewCategories.insert(i, CodeOfCategory(category: category));
         } else {
           tabBarViewCategories.insert(i, CategoryEmpty());
         }
@@ -532,7 +533,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
       saveOperatorsInLocal();
     }
     //print(currentCode.children[0].id);
-    Functions.setStatuBarColor();
+    //Functions.setStatuBarColor();
 
     return WillPopScope(
       onWillPop: () async {
@@ -550,15 +551,11 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-            toolbarHeight: 0,
-            elevation: 0,
-            brightness: Brightness.dark,
-            backgroundColor: Colors.transparent),
         body: operatorDatasLoading
             ? OperatorLoadingShimmer()
             : Container(
                 color: themeMode ? darkModeColorPrimary : Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 12),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -915,28 +912,33 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         : 0,
                                 duration: Duration(milliseconds: 2000),
                                 curve: Curves.decelerate,
-                                child: Material(
+                                child: Container(
                                   color: Colors.transparent,
-                                  child: InkWell(
-                                    hoverColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () {
-                                      setState(() {
-                                        more = false;
-                                        notification = false;
-                                        whatNew = false;
-                                        about = false;
-                                      });
-                                    },
-                                    child: Center(
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: 10.0,
-                                            sigmaY: 10.0,
-                                            tileMode: TileMode.decal),
-                                        child: Container(
-                                          color: Colors.transparent,
+                                  height: context.screenHeight,
+                                  width: context.screenWidth,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      hoverColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () {
+                                        setState(() {
+                                          more = false;
+                                          notification = false;
+                                          whatNew = false;
+                                          about = false;
+                                        });
+                                      },
+                                      child: Center(
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: 10.0,
+                                              sigmaY: 10.0,
+                                              tileMode: TileMode.decal),
+                                          child: Container(
+                                            color: Colors.transparent,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1131,6 +1133,14 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                                           setState(() {
                                                             themeMode =
                                                                 !themeMode;
+                                                            getCurrentOperatorDatas(
+                                                                operatorId);
+                                                            Functions
+                                                                .setStatuBarColor();
+                                                            jsonStore.setItem(
+                                                                'themeMode', {
+                                                              'value': themeMode
+                                                            });
                                                           });
                                                         },
                                                         child: Image.asset(
@@ -1254,7 +1264,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                 height: 50,
                                 decoration: BoxDecoration(
                                     color: !searchMode
-                                        ? Colors.transparent
+                                        ? Colors.white.withOpacity(0)
                                         : themeMode
                                             ? darkModeColorSecondary
                                                 .withOpacity(0.1)
@@ -1264,7 +1274,7 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         ? []
                                         : [
                                             BoxShadow(
-                                                color: Colors.grey.shade200,
+                                                color: Colors.grey.shade300,
                                                 spreadRadius: 1,
                                                 blurRadius: 1),
                                           ]),
@@ -1330,99 +1340,6 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    AnimatedPositioned(
-                      top: whatNew ? 20 : context.screenHeight,
-                      left: 0,
-                      right: 0,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.decelerate,
-                      child: Container(
-                        height: context.screenHeight - 60,
-                        width: context.screenWidth,
-                        margin:
-                            EdgeInsets.only(left: 28, right: 28, bottom: 15),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  spreadRadius: 1,
-                                  blurRadius: 3),
-                            ]),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('What’s new',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 16,
-                                          color: greenColor,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 8),
-                                  Text(
-                                      'All the news of the application updates',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontRegular,
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w600)),
-                                  SizedBox(height: 30),
-                                  Text('v1.0.0',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700)),
-                                  SizedBox(height: 8),
-                                  Text(
-                                      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
-                                      style: TextStyle(
-                                          height: 2,
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 12,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700)),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      hoverColor: Colors.transparent,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () {
-                                        setState(() {
-                                          whatNew = false;
-                                        });
-                                      },
-                                      child: Text('Fermer',
-                                          style: TextStyle(
-                                              fontFamily: Fonts.fontMedium,
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
                     //Notification Container
                     AnimatedOpacity(
                       opacity: notification ? 1 : 0,
@@ -1444,6 +1361,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                         style: TextStyle(
                                             fontFamily: Fonts.fontMedium,
                                             fontSize: 16,
+                                            color: themeMode
+                                                ? Colors.white
+                                                : Colors.black,
                                             fontWeight: FontWeight.w700)),
                                     Container(
                                       child: Material(
@@ -1461,7 +1381,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                               style: TextStyle(
                                                   fontFamily: Fonts.fontMedium,
                                                   fontSize: 13,
-                                                  color: Colors.black,
+                                                  color: themeMode
+                                                      ? Colors.white
+                                                      : Colors.black,
                                                   fontWeight: FontWeight.w600)),
                                         ),
                                       ),
@@ -1526,6 +1448,9 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                     style: TextStyle(
                                         fontFamily: Fonts.fontRegular,
                                         fontSize: 12,
+                                        color: themeMode
+                                            ? Colors.grey.shade400
+                                            : Colors.black,
                                         fontWeight: FontWeight.w700)),
                               ),
                             ),
@@ -1550,7 +1475,8 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                             SizedBox(height: 38),
                             Text('MYSHARP’S',
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color:
+                                        themeMode ? Colors.white : Colors.black,
                                     fontFamily: Fonts.fontMedium,
                                     fontSize: 18,
                                     letterSpacing: 5,
@@ -1558,7 +1484,8 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                             SizedBox(height: 15),
                             Text('V1.0.0',
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color:
+                                        themeMode ? Colors.white : Colors.black,
                                     fontFamily: Fonts.fontMedium,
                                     fontSize: 10,
                                     letterSpacing: 3,
@@ -1568,14 +1495,18 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                                 style: TextStyle(
                                     fontFamily: Fonts.fontLight,
                                     fontSize: 12,
-                                    color: Colors.black.withOpacity(0.4),
+                                    color: themeMode
+                                        ? Colors.grey.shade500
+                                        : Colors.black.withOpacity(0.4),
                                     fontWeight: FontWeight.bold)),
                             SizedBox(height: 2),
                             Text('TheBrains',
                                 style: TextStyle(
                                     fontFamily: Fonts.fontLight,
                                     fontSize: 16,
-                                    color: Colors.black.withOpacity(0.4),
+                                    color: themeMode
+                                        ? Colors.grey.shade500
+                                        : Colors.black.withOpacity(0.4),
                                     fontWeight: FontWeight.bold)),
                           ],
                         ),
@@ -1592,85 +1523,108 @@ class _UssdListState extends State<UssdList> with TickerProviderStateMixin {
                         width: context.screenWidth,
                         margin:
                             EdgeInsets.only(left: 28, right: 28, bottom: 15),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:
+                                themeMode ? darkModeColorPrimary : Colors.white,
                             borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.shade200,
-                                  spreadRadius: 2.5,
-                                  blurRadius: 3),
-                            ]),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('What’s new',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 16,
-                                          color: greenColor,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 8),
-                                  Text(
-                                      'All the news of the application updates',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontRegular,
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w600)),
-                                  SizedBox(height: 30),
-                                  Text('v1.0.0',
-                                      style: TextStyle(
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700)),
-                                  SizedBox(height: 8),
-                                  Text(
-                                      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
-                                      style: TextStyle(
-                                          height: 2,
-                                          fontFamily: Fonts.fontMedium,
-                                          fontSize: 12,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700)),
-                                ],
-                              ),
+                            boxShadow: themeMode
+                                ? []
+                                : [
+                                    BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        spreadRadius: 2.5,
+                                        blurRadius: 3),
+                                  ]),
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              color: themeMode
+                                  ? darkModeColorSecondary.withOpacity(0.1)
+                                  : Colors.white,
                             ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      hoverColor: Colors.transparent,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () {
-                                        setState(() {
-                                          whatNew = false;
-                                        });
-                                      },
-                                      child: Text('Fermer',
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('What’s new',
                                           style: TextStyle(
                                               fontFamily: Fonts.fontMedium,
-                                              fontSize: 15,
-                                              color: Colors.black,
+                                              fontSize: 16,
+                                              color: greenColor,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 8),
+                                      Text(
+                                          'All the news of the application updates',
+                                          style: TextStyle(
+                                              fontFamily: Fonts.fontRegular,
+                                              fontSize: 14,
+                                              color: themeMode
+                                                  ? Colors.grey.shade500
+                                                  : Colors.black
+                                                      .withOpacity(0.3),
+                                              fontWeight: FontWeight.w600)),
+                                      SizedBox(height: 30),
+                                      Text('v1.0.0',
+                                          style: TextStyle(
+                                              fontFamily: Fonts.fontMedium,
+                                              fontSize: 14,
+                                              color: themeMode
+                                                  ? Colors.grey.shade400
+                                                  : Colors.black,
                                               fontWeight: FontWeight.w700)),
-                                    ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                          'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
+                                          style: TextStyle(
+                                              height: 2,
+                                              fontFamily: Fonts.fontMedium,
+                                              fontSize: 12,
+                                              color: themeMode
+                                                  ? Colors.grey.shade400
+                                                  : Colors.black,
+                                              fontWeight: FontWeight.w700)),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            )
-                          ],
+                                ),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          hoverColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () {
+                                            setState(() {
+                                              whatNew = false;
+                                            });
+                                          },
+                                          child: Text('Fermer',
+                                              style: TextStyle(
+                                                  fontFamily: Fonts.fontMedium,
+                                                  fontSize: 15,
+                                                  color: themeMode
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.w700)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),

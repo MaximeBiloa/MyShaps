@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:mysharps/data/variables.dart';
@@ -11,10 +13,16 @@ class Functions {
   }
 
   static setStatuBarColor() async {
-    await FlutterStatusbarManager.setColor(
-        themeMode ? darkModeColorPrimary : Colors.white,
-        animated: false);
-    await FlutterStatusbarManager.setStyle(
+    FlutterStatusbarManager.setHidden(true);
+    FlutterStatusbarManager.setColor(
+      themeMode ? darkModeColorPrimary : Colors.white,
+    );
+    FlutterStatusbarManager.setStyle(
         themeMode ? StatusBarStyle.LIGHT_CONTENT : StatusBarStyle.DARK_CONTENT);
+    Timer(Duration(milliseconds: 100), () {
+      FlutterStatusbarManager.setHidden(false);
+    });
+
+    //await
   }
 }

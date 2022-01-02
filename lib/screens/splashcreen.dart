@@ -40,16 +40,23 @@ class _SplashcreenState extends State<Splashcreen> {
   void initState() {
     super.initState();
 
-    //SET STATUBARCOLOR
-    Functions.setStatuBarColor();
-    //INITIALIZE CATEGORIES PROVIDER
     categoriesProvider = new CategoriesProvider();
     countriesProvider = new CountriesProvider();
     operatorsProvider = new OperatorsProvider();
     jsonStore = new JsonStore();
-    startAnimation();
-    getOperatorsToLocalJsonFile();
-    //getOperators();
+
+    jsonStore.getItem('themeMode').then((result) {
+      print("Le resultat est : $result");
+      setState(() {
+        themeMode = (result != null) ? result['value'] : false;
+      });
+      //SET STATUBARCOLOR
+      Functions.setStatuBarColor();
+      //INITIALIZE CATEGORIES PROVIDER
+      startAnimation();
+      getOperatorsToLocalJsonFile();
+      //getOperators();
+    });
   }
 
   @override
@@ -174,14 +181,15 @@ class _SplashcreenState extends State<Splashcreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*/*appBar: AppBar(
           toolbarHeight: 0,
           elevation: 0,
           brightness: Brightness.dark,
-          backgroundColor: Colors.transparent),
+          backgroundColor: Colors.transparent),*/*/
       body: Container(
         width: context.screenWidth,
         height: context.screenHeight,
+        color: themeMode ? darkModeColorPrimary : Colors.white,
         child: Stack(
           alignment: Alignment.center,
           children: [

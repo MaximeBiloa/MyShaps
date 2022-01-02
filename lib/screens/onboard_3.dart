@@ -11,6 +11,7 @@ import 'package:mysharps/screens/ussd_list.dart';
 import 'package:mysharps/utils/colors.dart';
 import 'package:mysharps/utils/extensions.dart';
 import 'package:mysharps/utils/fonts.dart';
+import 'package:mysharps/utils/functions.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Onboard3 extends StatefulWidget {
@@ -24,6 +25,7 @@ class _Onboard3State extends State<Onboard3> {
   @override
   void initState() {
     super.initState();
+    //Functions.setStatuBarColor();
     Timer(Duration(milliseconds: 100), () {
       setState(() {
         animationStarted = true;
@@ -34,11 +36,11 @@ class _Onboard3State extends State<Onboard3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
           toolbarHeight: 0,
           elevation: 0,
           brightness: Brightness.dark,
-          backgroundColor: Colors.transparent),
+          backgroundColor: Colors.transparent),*/
       body: Container(
         width: context.screenWidth,
         height: context.screenHeight,
